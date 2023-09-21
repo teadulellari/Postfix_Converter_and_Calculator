@@ -1,5 +1,3 @@
-
-// this is fkin service as it process data and DOES NOTHING with HTTP ENDPOINT
 export const postfix = (infix) => {
   let stack = [];
   let output = [];
@@ -10,36 +8,45 @@ export const postfix = (infix) => {
     "+": 1,
     "-": 1,
   };
-  const regexVar = new RegExp("^[a-zA-Z0-9]+$");
-  const regexOp = new RegExp("^[+\\-*/^]$");
-  for (let i = 0; i < infix.length; i++) {
-    if (regexVar.test(infix[i])) {
-      output.push(infix[i]);
-    } else if (regexOp.test(infix[i])) {
+const filteredInfix=formatInfix(infix);
+//regex to check of any alphanumeric and decimal expression
+const regexVar = new RegExp("^([a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0-9]+)?)$", "i");
+const regexOp = new RegExp("^[+\\-*/^]$");
+
+  for (let i = 0; i < filteredInfix.length; i++) {
+    if (regexVar.test(filteredInfix[i])) {
+      output.push(filteredInfix[i]);
+    } else if (regexOp.test(filteredInfix[i])) {
       while (
         stack.length > 0 &&
-        precedence[stack[stack.length - 1]] >= precedence[infix[i]] &&
+        precedence[stack[stack.length - 1]] >= precedence[filteredInfix[i]] &&
         stack[stack.length - 1] !== "("
       ) {
         output.push(stack.pop());
       }
-      stack.push(infix[i]);
-    } else if (infix[i] === "(") {
-      stack.push(infix[i]);
-    } else if (infix[i] === ")") {
+      stack.push(filteredInfix[i]);
+    } else if (filteredInfix[i] === "(") {
+      stack.push(filteredInfix[i]);
+    } else if (filteredInfix[i] === ")") {
       while (stack.length > 0 && stack[stack.length - 1] !== "(") {
         output.push(stack.pop());
       }
-      stack.pop(); // Remove the opening parenthesis
+      stack.pop();
     }
   }
 
   while (stack.length > 0) {
     output.push(stack.pop());
   }
-  console.log("beko")
-  console.log(output)
-  return output.join(' ');
+
+  console.log("this is the output: " + output.join(''));
+  return output.join('');
 };
 
-
+export const formatInfix = (infix) => {
+  const regexPattern = /([a-zA-Z0-9]+(?:\.\d+)?|[+\-*^()])/g;
+  const infixArray = infix.split(regexPattern);
+  const filteredInfix = infixArray.filter(Boolean);
+  console.log(filteredInfix);
+  return filteredInfix;
+};
