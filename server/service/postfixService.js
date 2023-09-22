@@ -1,13 +1,7 @@
 export const postfix = (infix) => {
   let stack = [];
   let output = [];
-  const precedence = {
-    "^": 3,
-    "*": 2,
-    "/": 2,
-    "+": 1,
-    "-": 1,
-  };
+
 const filteredInfix=formatInfix(infix);
 //regex to check of any alphanumeric and decimal expression
 const regexVar = new RegExp("^([a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0-9]+)?)$", "i");
@@ -19,11 +13,12 @@ const regexOp = new RegExp("^[+\\-*/^]$");
     } else if (regexOp.test(filteredInfix[i])) {
       while (
         stack.length > 0 &&
-        precedence[stack[stack.length - 1]] >= precedence[filteredInfix[i]] &&
-        stack[stack.length - 1] !== "("
+        isHigherPrecedence(filteredInfix[i], stack[stack.length-1]) &&
+        stack[stack.length - 1] !== "(" 
       ) {
         output.push(stack.pop());
       }
+     
       stack.push(filteredInfix[i]);
     } else if (filteredInfix[i] === "(") {
       stack.push(filteredInfix[i]);
@@ -44,9 +39,23 @@ const regexOp = new RegExp("^[+\\-*/^]$");
 };
 
 export const formatInfix = (infix) => {
-  const regexPattern = /([a-zA-Z0-9]+(?:\.\d+)?|[+\-*^()])/g;
+  const regexPattern = /([a-zA-Z0-9]+(?:\.\d+)?|[+\-*/^()])/g;
   const infixArray = infix.split(regexPattern);
   const filteredInfix = infixArray.filter(Boolean);
   console.log(filteredInfix);
   return filteredInfix;
 };
+
+export const isHigherPrecedence=(x, y)=>{
+  const precedence = {
+    "^": 3,
+    "*": 2,
+    "/": 2,
+    "+": 1,
+    "-": 1,
+  };
+  if ((x != "^" && precedence[x] <= precedence[y]) ) {
+    return true;
+ }
+ return false;
+}
