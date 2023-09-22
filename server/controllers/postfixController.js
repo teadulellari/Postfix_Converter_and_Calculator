@@ -1,4 +1,4 @@
-import { postfix } from '../service/postfixService.js';
+import { postfix } from '../service/postfixService.mjs';
 // this is a fked up code that just takes the stuff to another class/ function instead of doing it on controller (in your case , in router)
 export const postfixController = (req, res) =>{
     const infix = req.body;
