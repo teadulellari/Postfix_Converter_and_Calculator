@@ -3,8 +3,8 @@ import postfixRouter from "./routes/postfixRouter.js";
 
 const app = express();
 const port = 3001;
-
-app.use(express.text());
+//changed here 1
+app.use(express.json());
 app.use("/api", postfixRouter);
 
 app.listen(port, () => {

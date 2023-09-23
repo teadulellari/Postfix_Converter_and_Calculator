@@ -1,3 +1,48 @@
+
+export const calcultate = (infix) => {
+  const postfixExpression = postfix(infix)
+  console.log("this isthe psotfix i get " + postfixExpression)
+  const stack = [];
+  for (let element of postfixExpression) {
+   
+    if(element === ' '){
+      continue;
+    }
+    if (!isNaN(element)) {
+      stack.push(parseFloat(element));
+      console.log(stack)
+    } else {
+      const op2 = stack.pop();
+      const op1 = stack.pop();
+
+      switch (element) {
+        case "+":
+          stack.push(op1 + op2);
+          break;
+        case "-":
+          stack.push(op1 - op2);
+          break;
+        case "*":
+          stack.push(op1 * op2);
+          break;
+        case "/":
+          stack.push(op1 / op2);
+          break;
+        case "^":
+          stack.push(Math.pow(op1, op2));
+          break;
+        default:
+          throw new Error(`Invalid operator: ${element}`);
+      }
+    }
+  }
+  if (stack.length === 1) {
+    return stack[0];
+  } else {
+    throw new Error("Invalid postfix expression ");
+  }
+};
+
 export const postfix = (infix) => {
   let stack = [];
   let output = [];
@@ -34,16 +79,17 @@ const regexOp = new RegExp("^[+\\-*/^]$");
     output.push(stack.pop());
   }
 
-  console.log("this is the output: " + output.join(''));
-  return output.join(' ');
+  return output;
 };
 
 export const formatInfix = (infix) => {
-  const regexPattern = /([a-zA-Z0-9]+(?:\.\d+)?|[+\-*/^()])|(\s+)/g;
-  const infixArray = infix.match(regexPattern);
-  const filteredInfix = infixArray.filter((item) => !/\s+/.test(item));
+  // Split the expression using the specified delimiter
+  const infixArray = infix.expression.split(infix.delimiter);
+  // Filter out any empty or whitespace-only items
+  const filteredInfix = infixArray.filter((item) => item.trim() !== " ");
   return filteredInfix;
 };
+
 
 
 
