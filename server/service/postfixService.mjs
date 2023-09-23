@@ -1,9 +1,18 @@
 
 export const calcultate = (infix) => {
-  const postfixExpression = postfix(infix)
-  console.log("this isthe psotfix i get " + postfixExpression)
+  const postfixExpression = postfix(infix);
   const stack = [];
-  for (let element of postfixExpression) {
+  const variablePattern = /[a-zA-Z]+/g;
+  //replace the variables with their value
+  const replacedVariablesArray = postfixExpression.map((element) => {
+    if (variablePattern.test(element)) {
+     
+      return infix[element] || element; 
+    }
+    return element; 
+  });
+ 
+  for (let element of replacedVariablesArray) {
    
     if(element === ' '){
       continue;
@@ -37,11 +46,13 @@ export const calcultate = (infix) => {
     }
   }
   if (stack.length === 1) {
+   // console.log(stack[0])
     return stack[0];
   } else {
     throw new Error("Invalid postfix expression ");
   }
 };
+
 
 export const postfix = (infix) => {
   let stack = [];
