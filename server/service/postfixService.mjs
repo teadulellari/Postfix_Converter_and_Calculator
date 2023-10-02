@@ -76,6 +76,10 @@ export const postfix = (infix) => {
     if (regexVar.test(token)) {
       output.push(token); 
     } else if (regexOp.test(token)) {
+      if (token === '^' && (!filteredInfix[i + 1] || !(/^[a-zA-Z0-9]+$/.test(filteredInfix[i + 1])))) {
+        return new Error('Invalid expression: No exponent specified.');
+      }
+
       while (
         stack.length > 0 &&
         stack[stack.length - 1] !== "(" &&
@@ -112,6 +116,7 @@ export const postfix = (infix) => {
 
   return output;
 };
+
 
 export const formatInfix = (infix) => {
   // Split the expression using the specified delimiter
