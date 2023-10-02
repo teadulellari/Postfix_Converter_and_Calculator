@@ -1,6 +1,9 @@
 
-export const calcultate = (infix) => {
-  const postfixExpression = postfix(infix);
+export const calculate = (infix) => {
+  const postfixExpression = postfix(infix, true); 
+  if (postfixExpression instanceof Error) {
+    return postfixExpression; 
+  }
   const stack = [];
   const variablePattern = /[a-zA-Z]+/g;
   //replace the variables with their value
@@ -19,7 +22,7 @@ export const calcultate = (infix) => {
     }
     if (!isNaN(element)) {
       stack.push(parseFloat(element));
-      console.log(stack)
+      console.log(stack);
     } else {
       const op2 = stack.pop();
       const op1 = stack.pop();
@@ -46,47 +49,64 @@ export const calcultate = (infix) => {
     }
   }
   if (stack.length === 1) {
-   // console.log(stack[0])
     return stack[0];
   } else {
-    throw new Error("Invalid postfix expression ");
+    console.log(new Error("Invalid postfix expression"))
+    return new Error("Invalid postfix expression");
   }
 };
 
 
 export const postfix = (infix) => {
-  let stack = [];
-  let output = [];
+  const filteredInfix = formatInfix(infix);
+  const regexVar = new RegExp("^[a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0.9]+)?$", "i");
+  const regexOp = new RegExp("^[+\\-*/^]$");
 
-const filteredInfix=formatInfix(infix);
-//regex to check of any alphanumeric and decimal expression
-const regexVar = new RegExp("^([a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0-9]+)?)$", "i");
-const regexOp = new RegExp("^[+\\-*/^]$");
+  let previousToken = null;
+  const output = [];
+  const stack = [];
 
   for (let i = 0; i < filteredInfix.length; i++) {
-    if (regexVar.test(filteredInfix[i])) {
-      output.push(filteredInfix[i]);
-    } else if (regexOp.test(filteredInfix[i])) {
+    const token = filteredInfix[i];
+
+    if (token.includes(' ')) {
+      return new Error('Invalid expression: Spaces within tokens.');
+    }
+
+    if (regexVar.test(token)) {
+      output.push(token); 
+    } else if (regexOp.test(token)) {
       while (
         stack.length > 0 &&
-        isHigherPrecedence(filteredInfix[i], stack[stack.length-1]) &&
-        stack[stack.length - 1] !== "(" 
+        stack[stack.length - 1] !== "(" &&
+        (
+          (isHigherPrecedence(token, stack[stack.length - 1]) && token !== "^") ||
+          (isHigherPrecedence(token, stack[stack.length - 1]) && token === "^")
+        )
       ) {
         output.push(stack.pop());
       }
-     
-      stack.push(filteredInfix[i]);
-    } else if (filteredInfix[i] === "(") {
-      stack.push(filteredInfix[i]);
-    } else if (filteredInfix[i] === ")") {
+      stack.push(token);
+    } else if (token === "(") {
+      stack.push(token);
+    } else if (token === ")") {
       while (stack.length > 0 && stack[stack.length - 1] !== "(") {
         output.push(stack.pop());
       }
-      stack.pop();
+      if (stack.length === 0 || stack.pop() !== "(") {
+        return new Error('Invalid expression: Unbalanced parentheses.');
+      }
+    } else {
+      return new Error(`Invalid expression: Invalid token '${token}'.`);
     }
+
+    previousToken = token;
   }
 
   while (stack.length > 0) {
+    if (stack[stack.length - 1] === "(") {
+      return new Error('Invalid expression: Unbalanced parentheses.');
+    }
     output.push(stack.pop());
   }
 
@@ -117,3 +137,15 @@ export const isHigherPrecedence=(x, y)=>{
  }
  return false;
 }
+
+export const isValidExpression = (infix) =>{
+   
+  
+  return true;
+}
+
+ 
+  
+
+
+
