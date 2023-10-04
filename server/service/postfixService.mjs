@@ -1,19 +1,20 @@
 
 export const calculate = (infix) => {
   const postfixExpression = postfix(infix, true); 
+  console.log("in calculate: " + postfixExpression)
   if (postfixExpression instanceof Error) {
     return postfixExpression; 
   }
   const stack = [];
-  const variablePattern = /[a-zA-Z]+/g;
-  //replace the variables with their value
+  const variablePattern = /^[a-zA-Z]+$/;
   const replacedVariablesArray = postfixExpression.map((element) => {
     if (variablePattern.test(element)) {
-     
-      return infix[element] || element; 
+      // Check if the variable exists in the 'infix' object
+      return infix[element] !== undefined ? infix[element] : element;
     }
-    return element; 
+    return element;
   });
+  console.log(replacedVariablesArray)
  
   for (let element of replacedVariablesArray) {
    
@@ -49,6 +50,7 @@ export const calculate = (infix) => {
     }
   }
   if (stack.length === 1) {
+    console.log("in calculate the result" +stack[0])
     return stack[0];
   } else {
     console.log(new Error("Invalid postfix expression"))
@@ -56,13 +58,11 @@ export const calculate = (infix) => {
   }
 };
 
-
 export const postfix = (infix) => {
   const filteredInfix = formatInfix(infix);
-  const regexVar = new RegExp("^[a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0.9]+)?$", "i");
+  const regexVar = new RegExp("^[a-zA-Z0-9]+(\\.[0-9]+)?|[0-9]+(\\.[0-9]+)?$", "i");
   const regexOp = new RegExp("^[+\\-*/^]$");
 
-  let previousToken = null;
   const output = [];
   const stack = [];
 
@@ -70,14 +70,14 @@ export const postfix = (infix) => {
     const token = filteredInfix[i];
 
     if (token.includes(' ')) {
-      return new Error('Invalid expression: Spaces within tokens.');
+      throw new Error('Invalid expression: Spaces within tokens.');
     }
 
     if (regexVar.test(token)) {
-      output.push(token); 
+      output.push(token);
     } else if (regexOp.test(token)) {
       if (token === '^' && (!filteredInfix[i + 1] || !(/^[a-zA-Z0-9]+$/.test(filteredInfix[i + 1])))) {
-        return new Error('Invalid expression: No exponent specified.');
+        throw new Error('Invalid expression: No exponent specified.');
       }
 
       while (
@@ -98,31 +98,36 @@ export const postfix = (infix) => {
         output.push(stack.pop());
       }
       if (stack.length === 0 || stack.pop() !== "(") {
-        return new Error('Invalid expression: Unbalanced parentheses.');
+        throw new Error('Invalid expression: Unbalanced parentheses.');
       }
     } else {
-      return new Error(`Invalid expression: Invalid token '${token}'.`);
+      throw new Error(`Invalid expression: Invalid token '${token}'.`);
     }
-
-    previousToken = token;
   }
 
   while (stack.length > 0) {
     if (stack[stack.length - 1] === "(") {
-      return new Error('Invalid expression: Unbalanced parentheses.');
+      throw new Error('Invalid expression: Unbalanced parentheses.');
     }
     output.push(stack.pop());
   }
 
-  return output;
+  const postfixExpression = output.join(' ').replace(/[()]/g, '').split(' ');
+
+  if (postfixExpression.some(token => !regexVar.test(token) && !regexOp.test(token))) {
+    throw new Error('Invalid expression: Contains invalid characters.');
+  }
+
+  return postfixExpression;
 };
 
 
+
 export const formatInfix = (infix) => {
-  // Split the expression using the specified delimiter
-  const infixArray = infix.expression.split(infix.delimiter);
-  // Filter out any empty or whitespace-only items
-  const filteredInfix = infixArray.filter((item) => item.trim() !== " ");
+  // Use a regular expression to split the expression
+  const infixArray = infix.expression.match(/[-+*/^()]|\d+\.\d+|\d+|\w+/g);
+  // Filter out any empty items
+  const filteredInfix = infixArray.filter((item) => item.trim() !== "");
   return filteredInfix;
 };
 
@@ -142,15 +147,3 @@ export const isHigherPrecedence=(x, y)=>{
  }
  return false;
 }
-
-export const isValidExpression = (infix) =>{
-   
-  
-  return true;
-}
-
- 
-  
-
-
-
