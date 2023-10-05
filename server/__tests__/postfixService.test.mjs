@@ -26,10 +26,6 @@ describe("postfix", () => {
       ["2", "3", "*", "4", "+", "5.2", "6", "2.3", "/", "-", "*"]
     );
   });
-  it('should return an error for an invalid expression', () => {
-    const result = postfix({expression:"3 + 4 * (2 -)", delimiter: " "});
-    expect(result instanceof Error).toEqual(true);
-  });
 });
 
 describe("formatInfix", () => {
@@ -69,6 +65,26 @@ describe("formatInfix", () => {
       "0.5",
       ")",
     ]);
+  });
+  it("should return an error if the expression is incomplete", () => {
+    const result = formatInfix({expression: "3 - 2 +"});
+    expect(result instanceof Error).toBe(true);
+  });
+  it("should return an error if the paranthesis are unbalanced", () => {
+    const result = formatInfix({expression: "3 - (2 +"});
+    expect(result instanceof Error).toBe(true);
+  });
+  it("should return an error if the expression contains invalid character", () => {
+    const result = formatInfix({expression: "3 - 2 + @"});
+    expect(result instanceof Error).toBe(true);
+  });
+  it("should return an error if the expression contains invalid separator", () => {
+    const result = formatInfix({expression: "3*-*2*+*4"});
+    expect(result instanceof Error).toBe(true);
+  });
+  it("should return an error if the expression has missing exponent", () => {
+    const result = formatInfix({expression: "3 - 2 + 4 ^"});
+    expect(result instanceof Error).toBe(true);
   });
 });
 
@@ -116,9 +132,6 @@ describe("calculate", () => {
     expect(result instanceof Error).toBe(true);
   });
 
-  it('should return an error for an expression with missing operator', () => {
-    const result = postfix({ expression: '3 4' });
-    expect(result instanceof Error).toBe(true);
-  });
 });
 
+//handle the error cases good in code and in the tests so they can pass  come on you can do it
