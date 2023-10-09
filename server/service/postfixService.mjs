@@ -1,20 +1,22 @@
 export const calculate = (infix) => {
   const postfixExpression = postfix(infix, true);
-  console.log("in calculate: " + postfixExpression);
   if (postfixExpression instanceof Error) {
     return postfixExpression;
   }
   const stack = [];
   const variablePattern = /^[a-zA-Z]+$/;
+
   const replacedVariablesArray = postfixExpression.map((element) => {
+   
     if (variablePattern.test(element)) {
-      // Check if the variable exists in the 'infix' object
-      return infix[element] !== undefined ? infix[element] : element;
+      // Check if the variable exists in the 'variables' object
+      return infix.variables[element] !== undefined
+        ? infix.variables[element]
+        : element;
     }
     return element;
   });
-  console.log(replacedVariablesArray);
-
+  
   for (let element of replacedVariablesArray) {
     if (element === " ") {
       continue;
