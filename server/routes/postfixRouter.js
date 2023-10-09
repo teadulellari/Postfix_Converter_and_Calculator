@@ -31,7 +31,7 @@ import { postfixCalculator, postfixConverter } from '../controllers/postfixContr
  *           additionalProperties:
  *             type: string
  *       example:
- *         expression: 2.5,/,(,1.5,+,0.5,),\+,n,+,m
+ *         expression: 2.5,/,(,1.5,+,0.5,),+,n,+,m
  *         delimiter: ,
  *         variables:
  *           n: "2"  
