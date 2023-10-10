@@ -40,7 +40,7 @@ import { postfixCalculator, postfixConverter } from '../controllers/postfixContr
 
 /**
  * @swagger
- * /convert:
+ * /api/convert:
  *   post:
  *     summary: Convert an infix expression into postfix expression
  *     tags: [Routes]
@@ -88,7 +88,7 @@ router.post('/convert', postfixConverter);
 
 /**
  * @swagger
- * /calculate:
+ * /api/calculate:
  *   post:
  *     summary: Calculate a postfix expression
  *     tags: [Routes]
@@ -133,5 +133,6 @@ router.post('/convert', postfixConverter);
  *                   description: The error message
  */
 router.post('/calculate', postfixCalculator);
+
 
 export default router;

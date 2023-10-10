@@ -102,11 +102,11 @@ describe("calculate", () => {
     expect(calculate({expression: "3 + 4 * 2 / (1 - 5) ^ 2", delimiter: " "})).toBe(3.5);
   });
   it("should return the correct calculated value of an expression with variables", () => {
-    expect(calculate({expression: "a + b * (c - d) / e", delimiter: " ", a: 2,
+    expect(calculate({expression: "a + b * (c - d) / e", delimiter: " ", variables: {a: 2,
     b: 3,
     c: 5,
     d: 1,
-    e: 2, })).toBe(8);
+    e: 2,} })).toBe(8);
   });
 
   it("should return the correct calculated value of a nested expressions", () => {
