@@ -1,6 +1,6 @@
 # Postfix Converter and Calculator
 
-This program convert an infix expression into a postfix expression. It also has the feature to calculate the value of the expression. The infix can be a basic arithmetic expression or a complex one including decimal numbers, variables etc.
+This program convert an infix expression into a postfix expression using Sunting Yard Algorithm. It also has the feature to calculate the value of the expression. The infix can be a basic arithmetic expression or a complex one including decimal numbers, variables etc.
 
 ## Installation
 
